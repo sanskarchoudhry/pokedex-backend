@@ -4,7 +4,7 @@ import "net/http"
 
 type Server struct {
 	port string
-	// db *sql.DB  <-- We will add this tomorrow!
+	// db *sql.DB
 }
 
 func NewServer() *http.Server {
