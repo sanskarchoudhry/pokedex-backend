@@ -1,22 +1,34 @@
 package server
 
-import "net/http"
+import (
+	"database/sql"
+	"net/http"
+	"time"
+
+	"github.com/sanskarchoudhry/pokedex-backend/internal/config"
+)
 
 type Server struct {
-	port string
-	// db *sql.DB
+	config *config.Config
+	db     *sql.DB
 }
 
-func NewServer() *http.Server {
-	NewServer := &Server{
-		port: ":8080",
+// NewServer receives dependencies (DI) instead of creating them
+func NewServer(cfg *config.Config, db *sql.DB) *Server {
+	return &Server{
+		config: cfg,
+		db:     db,
+	}
+}
+
+// Start handles the HTTP server lifecycle
+func (s *Server) Start() error {
+	httpServer := &http.Server{
+		Addr:         s.config.Port,
+		Handler:      s.RegisterRoutes(),
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
-	// Declare Server config
-	server := &http.Server{
-		Addr:    NewServer.port,
-		Handler: NewServer.RegisterRoutes(),
-	}
-
-	return server
+	return httpServer.ListenAndServe()
 }
