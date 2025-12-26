@@ -1,27 +1,25 @@
 package server
 
 import (
-	"database/sql"
 	"net/http"
 	"time"
 
 	"github.com/sanskarchoudhry/pokedex-backend/internal/config"
+	"github.com/sanskarchoudhry/pokedex-backend/internal/service"
 )
 
 type Server struct {
-	config *config.Config
-	db     *sql.DB
+	config      *config.Config
+	authService service.AuthService
 }
 
-// NewServer receives dependencies (DI) instead of creating them
-func NewServer(cfg *config.Config, db *sql.DB) *Server {
+func NewServer(cfg *config.Config, authService service.AuthService) *Server {
 	return &Server{
-		config: cfg,
-		db:     db,
+		config:      cfg,
+		authService: authService,
 	}
 }
 
-// Start handles the HTTP server lifecycle
 func (s *Server) Start() error {
 	httpServer := &http.Server{
 		Addr:         s.config.Port,
