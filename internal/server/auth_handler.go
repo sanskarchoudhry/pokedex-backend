@@ -36,3 +36,44 @@ func (s *Server) registerHandler(c *gin.Context) {
 		"user":    user,
 	})
 }
+
+type LoginRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
+func (s *Server) loginHandler(c *gin.Context) {
+	var req LoginRequest
+
+	// 1. Bind JSON
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	// 2. Call Service
+	accessToken, refreshToken, err := s.authService.Login(c.Request.Context(), req.Email, req.Password)
+	if err != nil {
+		// Security: Don't tell the user exactly what went wrong (user not found vs wrong password)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		return
+	}
+
+	// 3. Set Refresh Token in HttpOnly Cookie
+	// SetCookie(name, value, maxAge, path, domain, secure, httpOnly)
+	c.SetCookie(
+		"refresh_token",
+		refreshToken,
+		7*24*3600,
+		"/",
+		"",
+		false,
+		true,
+	)
+
+	// 4. Return Access Token in JSON
+	c.JSON(http.StatusOK, gin.H{
+		"access_token": accessToken,
+		"message":      "Login successful",
+	})
+}

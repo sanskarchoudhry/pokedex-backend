@@ -20,12 +20,12 @@ func main() {
 	defer dbService.Close()
 
 	// Repository
-	// We wrap the raw DB connection in our Repository
+
 	userRepo := repository.NewUserRepository(dbService.GetDB())
+	tokenRepo := repository.NewTokenRepository(dbService.GetDB())
 
 	// Service
-	// We inject the Repository into the Service
-	authSvc := service.NewAuthService(userRepo)
+	authSvc := service.NewAuthService(userRepo, tokenRepo)
 
 	// Server
 	// We inject the Service into the Server
