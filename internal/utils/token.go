@@ -64,3 +64,8 @@ func ValidateToken(tokenString string) (jwt.MapClaims, error) {
 
 	return nil, fmt.Errorf("invalid token")
 }
+
+func HashToken(rawToken string) string {
+	hash := sha256.Sum256([]byte(rawToken))
+	return hex.EncodeToString(hash[:])
+}

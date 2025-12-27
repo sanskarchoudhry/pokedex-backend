@@ -77,3 +77,25 @@ func (s *Server) loginHandler(c *gin.Context) {
 		"message":      "Login successful",
 	})
 }
+
+func (s *Server) refreshHandler(c *gin.Context) {
+	// 1. Get the HttpOnly Cookie
+	cookie, err := c.Cookie("refresh_token")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Refresh token missing"})
+		return
+	}
+
+	// 2. Call Service
+	newAccessToken, err := s.authService.Refresh(c.Request.Context(), cookie)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid or expired refresh token"})
+		return
+	}
+
+	// 3. Return the Fresh Access Token
+	c.JSON(http.StatusOK, gin.H{
+		"access_token": newAccessToken,
+		"message":      "Token refreshed successfully",
+	})
+}

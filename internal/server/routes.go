@@ -15,6 +15,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 		{
 			auth.POST("/register", s.registerHandler)
 			auth.POST("/login", s.loginHandler)
+			auth.POST("/refresh", s.refreshHandler)
 		}
 
 		// Protected Routes
