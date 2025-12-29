@@ -7,7 +7,7 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/jackc/pgx/v5/stdlib" // Import pgx driver
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 // Service represents the database service
@@ -26,7 +26,6 @@ var (
 )
 
 // New initializes the database connection
-// UDPATE: Now accepts connectionString as an argument for better Dependency Injection
 func New(connectionString string) Service {
 	// Reuse Connection
 	if dbInstance != nil {
