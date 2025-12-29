@@ -31,6 +31,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 					"user_id": userID,
 				})
 			})
+
+			// Pokemon Routes
+			protected.POST("/", s.createPokemonHandler)
+			protected.GET("/", s.listPokemonHandler)
 		}
 	}
 

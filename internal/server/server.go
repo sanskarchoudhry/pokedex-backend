@@ -9,14 +9,16 @@ import (
 )
 
 type Server struct {
-	config      *config.Config
-	authService service.AuthService
+	config         *config.Config
+	authService    service.AuthService
+	pokemonService service.PokemonService
 }
 
-func NewServer(cfg *config.Config, authService service.AuthService) *Server {
+func NewServer(cfg *config.Config, authService service.AuthService, pokeSvc service.PokemonService) *Server {
 	return &Server{
-		config:      cfg,
-		authService: authService,
+		config:         cfg,
+		authService:    authService,
+		pokemonService: pokeSvc,
 	}
 }
 

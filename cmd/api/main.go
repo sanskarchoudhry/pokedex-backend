@@ -23,13 +23,15 @@ func main() {
 
 	userRepo := repository.NewUserRepository(dbService.GetDB())
 	tokenRepo := repository.NewTokenRepository(dbService.GetDB())
+	pokeRepo := repository.NewPokemonRepository(dbService.GetDB())
 
 	// Service
 	authSvc := service.NewAuthService(userRepo, tokenRepo)
+	pokeService := service.NewPokemonService(pokeRepo)
 
 	// Server
 	// We inject the Service into the Server
-	srv := server.NewServer(cfg, authSvc)
+	srv := server.NewServer(cfg, authSvc, pokeService)
 
 	fmt.Printf("Server running on port %s\n", cfg.Port)
 	if err := srv.Start(); err != nil {
