@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"log/slog"
+	"os"
 
 	"github.com/sanskarchoudhry/pokedex-backend/internal/config"
 	"github.com/sanskarchoudhry/pokedex-backend/internal/database"
@@ -12,6 +12,14 @@ import (
 )
 
 func main() {
+
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level: slog.LevelDebug,
+	}))
+	slog.SetDefault(logger)
+
+	slog.Info("Starting Pokedex Backend", "env", "dev", "version", "1.0.0")
+
 	// Config
 	cfg := config.LoadConfig()
 
@@ -31,10 +39,11 @@ func main() {
 
 	// Server
 	// We inject the Service into the Server
-	srv := server.NewServer(cfg, authSvc, pokeService)
+	srv := server.NewServer(cfg, logger, authSvc, pokeService)
 
-	fmt.Printf("Server running on port %s\n", cfg.Port)
+	slog.Info("Server running", "port", cfg.Port)
 	if err := srv.Start(); err != nil {
-		log.Fatalf("cannot start server: %s", err)
+		slog.Error("Server crashed", "error", err)
+		os.Exit(1)
 	}
 }

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -10,15 +11,17 @@ import (
 
 type Server struct {
 	config         *config.Config
+	logger         *slog.Logger
 	authService    service.AuthService
 	pokemonService service.PokemonService
 }
 
-func NewServer(cfg *config.Config, authService service.AuthService, pokeSvc service.PokemonService) *Server {
+func NewServer(cfg *config.Config, logger *slog.Logger, authService service.AuthService, pokeSvc service.PokemonService) *Server {
 	return &Server{
 		config:         cfg,
 		authService:    authService,
 		pokemonService: pokeSvc,
+		logger:         logger,
 	}
 }
 
