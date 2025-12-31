@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"log/slog"
 	"net/http"
 	"time"
@@ -14,6 +15,7 @@ type Server struct {
 	logger         *slog.Logger
 	authService    service.AuthService
 	pokemonService service.PokemonService
+	httpServer     *http.Server
 }
 
 func NewServer(cfg *config.Config, logger *slog.Logger, authService service.AuthService, pokeSvc service.PokemonService) *Server {
@@ -34,4 +36,8 @@ func (s *Server) Start() error {
 	}
 
 	return httpServer.ListenAndServe()
+}
+
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.httpServer.Shutdown(ctx)
 }
